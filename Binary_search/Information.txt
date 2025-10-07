@@ -1,0 +1,8 @@
+BINARY SEARCH
+
+This is the well known binary search, nothing spaceial, it returns the position of the element X at verctor V
+
+
+ANALYSIS
+
+Scince this is a recursive funcion and it divides it's entrence size every time (it is a geometrical recursion) we can apply the Master Theorem: for geometric recursion the cost of the recursive function is T(n) = f(n^k) + a*T(n/b) if logb(a) < k: the function is O(f(n^k)); if logb(a) = k: the function is O(f(n^k)log(n)); if logb(a) > k: the function is O(f(n^(logb(a)))). Proceeding to analysis, in this case T(n) = O(1) + B(n/2) so k = 0, a = 1 and b = 2 therefore, logb(a) = k so the function is O(n^0log(n)) = O(log(n)). 
