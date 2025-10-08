@@ -1,0 +1,15 @@
+MY QUICKSORT
+
+I took a quicksort from GeeksforGeeks and modified it to improve the pivot selection procedure.
+
+>My idea: Getting 3 candidates to pivot, as median-of-three does but making sure the where different. 
+>How I did it: I just crated a new function that iterates through the vector intillgetting 3 diferent pivot candidates and finally choose the middle one. 
+Additionally, it returns if it is necessary to order so in case all the vectors have the same value or just one different value; it skips unnecessary ordenations.
+To do so, my function starts getting the first candidate (fc) at the value of the highest index. 
+Then proceeds to get a different value from the higher half and prioritize the values at the middle of the vector. 
+If all values are equal, it restarts the process but considers only the lower half.
+If there was a different value than fc at the higher half, it repeats the process for the lower half.
+>Result, a functional quicksort with a better selection procedure than a basic one, bacouse it reduces execution time and probability of gettin at worst case.
+>Cost analysis: For random and most case: O(n*log(n)), for worst case: exactly = THETA((1/2)n^2) which is equal to O(n^2)
+
+In conclusion, my algorithm is a good idea but not good enough to be applied instead of other ideas like median-of-medians, introsort, 3-way quicksort, etc.
