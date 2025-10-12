@@ -79,3 +79,63 @@ architecture arch_buy_flag of buy_flag is
 begin
     BF <= EQ_loss or LT_loss;
 end architecture arch_buy_flag;
+
+
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity reg16 is
+    port (
+        clk : in  std_logic;
+        rst : in  std_logic;
+        din : in  signed(15 downto 0);
+        dout : out signed(15 downto 0)
+    );
+end entity reg16;
+
+architecture arch_reg16 of reg16 is
+    signal reg_data : signed(15 downto 0) := (others => '0');
+begin
+    process(rst, clk, din)
+    begin
+        if rst = '1' then
+            reg_data <= (others => '0');
+        elsif rising_edge(clk) then
+            reg_data <= din;
+        end if;
+    end process;
+    dout <= reg_data;
+end architecture arch_reg16;
+
+
+
+--missing carry out management
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity add is
+    port (
+        clk : in std_logic := '0';
+        rst : in std_logic := '0';
+        change : in signed(15 downto 0);
+        Acc_change_in : in signed(15 downto 0);
+        Acc_change_out : out signed(15 downto 0)
+    );
+end entity add;
+
+architecture arch_add of add is
+    signal result : signed(17 downto 0);
+begin
+    process(rst, clk, change, Acc_change_in)
+    begin
+        if rst = '1' then
+            result <= (others => '0');
+        elsif rising_edge(clk) then
+            result <= resize(Acc_change_in, result'length) + resize(change, result'length);
+        end if;
+    end process;
+    Acc_change_out <= result(15 downto 0);
+end architecture arch_add;
