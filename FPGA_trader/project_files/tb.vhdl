@@ -2,76 +2,106 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity tb_Sell_decider is
+entity tb_FPGA_trader is
 end entity;
 
 
-architecture tb of tb_Sell_decider is
-    signal Top_win       : signed(15 downto 0) := (others => '0');
-    signal Top_loss      : signed(15 downto 0) := (others => '0');
+architecture tb of tb_FPGA_trader is
+    signal Top_win : signed(15 downto 0) := (others => '0');
+    signal Top_loss : signed(15 downto 0) := (others => '0');
     signal Acc_change_in : signed(15 downto 0) := (others => '0');
-    signal Acc_change_out: signed(15 downto 0) := (others => '0');
-    signal change        : signed(15 downto 0) := (others => '0');
+    signal Acc_change_out : signed(15 downto 0) := (others => '0');
+    signal change : signed(15 downto 0) := (others => '0');
     signal GT_loss, LT_loss, EQ_loss : std_logic;
-    signal GT_win,  LT_win,  EQ_win  : std_logic;
-    signal SF, BF        : std_logic;
-    signal clk      : std_logic := '0';
-    signal rst_reg, rst_add  : std_logic := '1';
+    signal GT_win,  LT_win,  EQ_win : std_logic;
+    signal SF, BF : std_logic;
+    signal SF_raw, BF_raw : std_logic;
+    signal clk : std_logic := '0';
+    signal rst_reg, rst_add : std_logic := '1';
+    signal flag : std_logic := '0';
+    signal p_change : signed(15 downto 0) := (others => '0');
+    signal lt_change, gt_change, no_change : std_logic;
+    signal valid_flags : std_logic := '0'; --validation mask. Maybe usefull when implementing overflow management.
 begin
-    uut_cmp_win: entity work.cmp16_win
+    uut_cmp_win: entity work.cmp16
         port map (
-            Top_win => Top_win,
-            Acc_change => Acc_change_out,
-            LT_win => LT_win,
-            GT_win => GT_win,
-            EQ_win => EQ_win
+            A => Top_win,
+            B => Acc_change_out,
+            LT => LT_win,
+            GT => GT_win,
+            EQ => EQ_win
         );
-    uut_cmp_loss: entity work.cmp16_loss
+    uut_cmp_loss: entity work.cmp16
         port map (
-            Top_loss => Top_loss,
-            Acc_change => Acc_change_out,
-            LT_loss => LT_loss,
-            GT_loss => GT_loss,
-            EQ_loss => EQ_loss
+            A => Top_loss,
+            B => Acc_change_out,
+            LT => LT_loss,
+            GT => GT_loss,
+            EQ => EQ_loss
         );
-    uut_sf: entity work.sell_flag
+    uut_sf: entity work.or_gate
         port map (
-            GT_win => GT_win,
-            EQ_win => EQ_win,
-            SF => SF
+            A => GT_win,
+            B => EQ_win,
+            F => SF_raw
         );
-    uut_lf: entity work.buy_flag
+    uut_lf: entity work.or_gate
         port map (
-            LT_loss => LT_loss,
-            EQ_loss => EQ_loss,
-            BF => BF
+            A => LT_loss,
+            B => EQ_loss,
+            F => BF_raw
         );
     uut_add: entity work.add
         port map (
-            clk => clk,
+            clk => flag,
             rst => rst_add,
-            change => change,
-            Acc_change_in => Acc_change_in,
-            Acc_change_out => Acc_change_out
+            A => change,
+            B => Acc_change_in,
+            R => Acc_change_out
         );
-    uut_reg16: entity work.reg16
+    uut_reg_ac: entity work.reg16
         port map (
             clk => clk,
             rst => rst_reg,
             din => Acc_change_out,
             dout => Acc_change_in
         );
-
+    uut_reg_prevchange: entity work.reg16
+        port map (
+            clk => clk,
+            rst => rst_reg,
+            din => change,
+            dout => p_change
+        );
+    --Maybe I can use this comparer to manage overflow at add.
+    uut_change_cmp: entity work.cmp16
+        port map (
+            A => change,
+            B => p_change,
+            LT => lt_change,
+            GT => gt_change,
+            EQ => no_change
+        );
+    uut_add_flag: entity work.or_gate
+        port map (
+            A => lt_change,
+            B => gt_change,
+            F => flag
+        );
+    BF <= BF_raw when valid_flags = '1' else '0';
+    SF <= SF_raw when valid_flags = '1' else '0';
     main_stim: process
     begin
         wait for 3 ns;
         Top_win <= to_signed(7, 16);  Top_loss <= to_signed(-2, 16);
         rst_reg <= '0'; rst_add <= '0';
+        wait for 1 ns;
+        valid_flags <= '1';
         change <= to_signed(5, 16);  wait for 15 ns;  
         change <= to_signed(2, 16);  wait for 15 ns;  
-        change <= to_signed(10, 16);  wait for 15 ns; 
+        change <= to_signed(0, 16);  wait for 15 ns; 
         change <= to_signed(-8, 16); wait for 15 ns;  
-        change <= to_signed(-4, 16);  wait for 15 ns;
+        change <= to_signed(-6, 16);  wait for 15 ns;
         change <= to_signed(5, 16); wait for 15 ns;
         wait;
     end process main_stim;
