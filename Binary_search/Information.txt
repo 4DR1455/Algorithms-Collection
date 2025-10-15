@@ -1,6 +1,6 @@
 BINARY SEARCH
 
-This is the well known binary search, nothing special; it returns the position of the element X at vector V.
+This is the well known binary search, nothing special; it returns the position of the element X at vector V. Here I just did a practise of analysis.
 
 
 ANALYSIS
