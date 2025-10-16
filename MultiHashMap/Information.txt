@@ -4,4 +4,4 @@ When I heared about collision management at Algrithms and Data Structures subjec
 
 This implementation is similar to a Separate Chaining but instead of doing a chain in every one of the hashes we do a chain of hash tables of the same size. This way, we have a similar cost to a Separate chaining but we avoid iterating on lists becouse we can check in what hash map is our key.
 
-Todo: Change Hash map implementation to a vector so we avoid iterating through hash maps.
+To do: Change Hash map implementation to a vector so we avoid iterating through hash maps.
