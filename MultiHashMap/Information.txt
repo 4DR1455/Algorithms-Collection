@@ -1,0 +1,5 @@
+#MultiHashMap
+
+When I heared about collision management at Algrithms and Data Structures subject I thought this would be a good hash map implementation.
+
+It is similar to //need to be finished
