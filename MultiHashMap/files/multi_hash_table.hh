@@ -6,7 +6,7 @@ class MultiHashTable {
 public:
 //s'ha d'arreglar el constructor
     MultiHashTable(std::size_t capacity) : _capacity(capacity), _size(0) {
-        tables.push_back(HashTable<K,V>(_capacity));
+        expand_tables(_capacity - 1);
     }
     void insert_or_update(const K& key, const V& value) {
         int n_h_m = key/_capacity;
