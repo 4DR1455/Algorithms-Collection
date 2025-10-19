@@ -2,6 +2,15 @@
 
 When I heared about collision management at Algrithms and Data Structures subject I thought this would be a good hash map implementation.
 
-This implementation is similar to a Separate Chaining but instead of doing a chain in every one of the hashes we do a chain of hash tables of the same size. This way, we have a similar cost to a Separate chaining but we avoid iterating on lists becouse we can check in what hash map is our key.
+I did a similar implementation to a Separate Chaining but instead of doing a chain in every one of the hashes we do a chain of hash tables of the same size. This way, we have a similar cost to a Separate chaining but we avoid iterating on lists becouse we can check in what hash map is our key trhough a simle division Key/hash_table_capacity. This makes it quicker than any other sistem to find any element at hash map becouse every other system have to iterate through the hash map or a list.
 
-To do: Change Hash map implementation to a vector so we avoid iterating through hash maps.
+I achived a hash map system that allows user to store data without havign a big cost at insert, update, consult, or erase (most times O(1)).
+  Cost analysis:
+    Insertion: Most times it will cost O(1) but, as it uses a vector that can grow, there are some times that hash map insertion will cost O(n).
+    Update: As it uses a vector position and a key the cost of arriving to the right value will be O(1), updating value too, so the final cost is also O(1).
+    Erase: As it uses a vector position and a key the cost of arriving to the right value will be O(1), erasing elemnt too, so the final cost is also O(1).
+    Find: As it uses a vector position and a key the cost of arriving to the right value will be O(1).
+
+    Memory cost: As it uses a vector of simple hash map this will be soo big compared to other implementations. To be specific the memory cost will be O(n²).
+
+In conclusion, I developed a really quick consulting and operating hash map, with so economic operating cost O(1) in most cases, but with a so expensive memory cost: O(n).
