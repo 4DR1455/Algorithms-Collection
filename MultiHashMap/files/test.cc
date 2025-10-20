@@ -14,7 +14,7 @@ void print_opt(const std::optional<T>& o) {
 }
 
 int main() {
-    constexpr std::size_t CAP = 7; // capacitat petita per forçar col·lisions fàcilment
+    constexpr std::size_t CAP = 7;
     MultiHashTable<int, std::string> ht(CAP);
 
     cout << "=== TEST: insert_or_update without collision ===" << endl;
