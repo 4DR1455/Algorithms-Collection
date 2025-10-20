@@ -10,15 +10,20 @@ using std::endl;
 template<typename T>
 void print_opt(const std::optional<T>& o) {
     if (o) cout << *o;
-    else cout << "<not found>";
+    else cout << "<no trobat>";
 }
 
 int main() {
-    constexpr std::size_t CAP = 7;
+    constexpr std::size_t CAP = 7; // capacitat petita per forçar col·lisions fàcilment
     MultiHashTable<int, std::string> ht(CAP);
 
     cout << "=== TEST: insert_or_update without collision ===" << endl;
     ht.insert_or_update(2, "two");
+    ht.insert_or_update(5, "five");
+    cout << "insert_or_update(5, \"five\") -> ";
+    cout << endl << "find(5) -> ";
+    print_opt(ht.find(5));
+    cout << "\n";
     cout << "insert_or_update(2, \"two\") -> ";
     cout << endl << "find(2) -> ";
     print_opt(ht.find(2));
